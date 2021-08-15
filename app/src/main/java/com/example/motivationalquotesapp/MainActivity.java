@@ -1,5 +1,6 @@
 package com.example.motivationalquotesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import com.example.motivationalquotesapp.databinding.ActivityMainBinding;
 import com.example.motivationalquotesapp.model.Quote;
 import com.example.motivationalquotesapp.util.QuotesRestClient;
+import com.example.motivationalquotesapp.util.WikiRestClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -57,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+    public void goToWiki(View view){
+        Intent wikiActivityIntent = new Intent(getApplicationContext(), WikiActivity.class);
+        wikiActivityIntent.putExtra("AUTHOR_NAME", binding.authorNameTextField.getText().toString());
+        startActivity(wikiActivityIntent);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,5 +82,18 @@ public class MainActivity extends AppCompatActivity {
         reloadQuote(findViewById(android.R.id.content).getRootView());
         // Attach the user to the binding
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.UK);
+                }
+            }
+        });
     }
 }
